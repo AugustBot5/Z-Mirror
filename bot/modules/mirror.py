@@ -241,7 +241,7 @@ class MirrorListener:
                         sleep(1)
                         fmsg = ''
                 if fmsg != '':
-                    sendMessage(msg + fmsg, self.bot, self.message, InlineKeyboardMarkup(buttons.build_menu(1)))
+                    sendMessage(msg + fmsg, self.bot, self.message)
         else:
             msg += f'\n<b>Type: </b>{typ}'
             if ospath.isdir(f'{DOWNLOAD_DIR}{self.uid}/{name}'):
@@ -457,7 +457,7 @@ def _mirror(bot, message, isZip=False, extract=False, isQbit=False, isLeech=Fals
 
     if not is_url(link) and not is_magnet(link) and not ospath.exists(link):
 
-        if AUTO_MUTE:
+        if AUTO_MUTE(update, context):
             try:
                 uname = message.from_user.mention_html(message.from_user.first_name)
                 chat_id = update.effective_chat.id
