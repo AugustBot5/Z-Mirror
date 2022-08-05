@@ -231,17 +231,17 @@ class MirrorListener:
             msg += f'\n<b>It Tooks:</b> {get_readable_time(time() - self.message.date.timestamp())}'
             msg += f'\n\n<b>Thanks For using {TITLE_NAME}</b>'
             if not files:
-                sendMessage(msg, self.bot, self.message)
+                sendMessage(msg, self.bot, self.message, InlineKeyboardMarkup(buttons.build_menu(1)))
             else:
                 fmsg = '\n<b>Your Files Are:</b>\n'
                 for index, (link, name) in enumerate(files.items(), start=1):
                     fmsg += f"{index}. <a href='{link}'>{name}</a>\n"
                     if len(fmsg.encode() + msg.encode()) > 4000:
-                        sendMessage(msg + fmsg, self.bot, self.message)
+                        sendMessage(msg + fmsg, self.bot, self.message, InlineKeyboardMarkup(buttons.build_menu(1)))
                         sleep(1)
                         fmsg = ''
                 if fmsg != '':
-                    sendMessage(msg + fmsg, self.bot, self.message, InlineKeyboardMarkup(buttons.build_menu(1)))
+                    sendMessage(msg + fmsg, self.bot, self.message)
         else:
             msg += f'\n<b>Type: </b>{typ}'
             if ospath.isdir(f'{DOWNLOAD_DIR}{self.uid}/{name}'):
