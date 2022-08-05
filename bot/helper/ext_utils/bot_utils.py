@@ -38,15 +38,15 @@ class MirrorStatus:
     STATUS_SEEDING = "Seeding...🌧"
 
 class EngineStatus:
-    STATUS_ARIA = "Aria2c v1.35.0"
-    STATUS_GD = "Google Api v2.51.0"
-    STATUS_MEGA = "Mega Api v3.12.0"
-    STATUS_QB = "qBittorrent v4.4.3"
-    STATUS_TG = "Pyrogram v2.0.27"
-    STATUS_YT = "YT-dlp v22.5.18"
+    STATUS_ARIA = "Aria2c"
+    STATUS_GD = "Google Api"
+    STATUS_MEGA = "Mega Api"
+    STATUS_QB = "qBit"
+    STATUS_TG = "Pyrogram"
+    STATUS_YT = "YT-dlp"
     STATUS_EXT = "pExtract"
-    STATUS_SPLIT = "FFmpeg v2.9.1"
-    STATUS_ZIP = "p7zip v16.02"
+    STATUS_SPLIT = "FFmpeg"
+    STATUS_ZIP = "p7zip"
 
 SIZE_UNITS = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
 
@@ -121,7 +121,7 @@ def get_progress_bar_string(status):
     cFull = p // 8
     p_str = '⬢' * cFull
     p_str += '⬡' * (12 - cFull)
-    p_str = f"〘{p_str}〙"
+    p_str = f"{p_str}"
     return p_str
 
 def progress_bar(percentage):
@@ -210,9 +210,9 @@ def get_readable_message():
                 globals()['PAGE_NO'] -= 1
         for index, download in enumerate(list(download_dict.values())[COUNT:], start=1):
             msg += f"\n\n<b>File Name:</b> <code>{escape(str(download.name()))}</code>"
-            msg += f"\n<b>Status:</b> <i>{download.status()}</i>"
+            msg += f"\n<b>Status:</b> <i>{download.status()}</i> <b>Using</b> {download.eng()}"
             if download.status() not in [MirrorStatus.STATUS_SEEDING]:
-                msg += f"\n{get_progress_bar_string(download)}\n<b>Progress:</b> {download.progress()}"
+                msg += f"\n{get_progress_bar_string(download)} {download.progress()}"
                 if download.status() in [MirrorStatus.STATUS_DOWNLOADING,
                                          MirrorStatus.STATUS_WAITING,
                                          MirrorStatus.STATUS_PAUSED]:
@@ -227,10 +227,9 @@ def get_readable_message():
                     msg += f"\n<b>Extracted:</b> {get_readable_file_size(download.processed_bytes())} of {download.size()}"
                 elif download.status() == MirrorStatus.STATUS_SPLITTING:
                     msg += f"\n<b>Splitted:</b> {get_readable_file_size(download.processed_bytes())} of {download.size()}"
-                msg += f"\n<b>Speed:</b> {download.speed()}\n<b>Waiting Time:</b> {download.eta()}"
-                msg += f"\n<b>Elapsed : </b>{get_readable_time(time() - download.message.date.timestamp())}"
-                msg += f'\n<b>Req By :</b> <a href="https://t.me/c/{str(download.message.chat.id)[4:]}/{download.message.message_id}">{download.message.from_user.first_name}</a>'
-                msg += f"\n<b>Engine :</b> {download.eng()}"
+                msg += f"\n<b>Network Bandwidth:</b> {download.speed()}"
+                msg += f"\n<b>ETA:</b> {download.eta()} <b>Elapsed : </b>{get_readable_time(time() - download.message.date.timestamp())}"
+                msg += f'\n<b>Req By:</b> <a href="https://t.me/c/{str(download.message.chat.id)[4:]}/{download.message.message_id}">{download.message.from_user.first_name}</a>'
                 try:
                     msg += f"\n<b>Seeders:</b> {download.aria_download().num_seeders}" \
                            f" | <b>Peers:</b> {download.aria_download().connections}"
@@ -244,7 +243,7 @@ def get_readable_message():
 
             elif download.status() == MirrorStatus.STATUS_SEEDING:
                 msg += f"\n<b>Size: </b>{download.size()}"
-                msg += f"\n<b>Engine:</b> <code>qBittorrent v4.4.2</code>"
+                msg += f"\n<b>Engine:</b> {download.eng()}"
                 msg += f"\n<b>Speed: </b>{get_readable_file_size(download.torrent_info().upspeed)}/s"
                 msg += f" | <b>Uploaded: </b>{get_readable_file_size(download.torrent_info().uploaded)}"
                 msg += f"\n<b>Ratio: </b>{round(download.torrent_info().ratio, 3)}"
@@ -435,7 +434,7 @@ def bot_sys_stats():
 CPU:  {progress_bar(cpuUsage)} {cpuUsage}%
 RAM: {progress_bar(mem_p)} {mem_p}%
 DISK: {progress_bar(disk)} {disk}%
-T: {disk_t}GB | F: {disk_f}GB
+T: {disk_t} | F: {disk_f}
 
 Working For: {currentTime}
 T-DL: {recv} | T-UL: {sent}
